@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const PORT = 3000;
 
-app.use(express.json()); // Necesario para parsear JSON del body
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -21,7 +21,6 @@ app.post('/guardar', (req, res) => {
     const filepath = 'myjsonfile.json';
     let data = { table: [] };
   
-    // Si el archivo ya existe, lo leemos y actualizamos
     if (fs.existsSync(filepath)) {
       const raw = fs.readFileSync(filepath, 'utf8');
       data = JSON.parse(raw);
