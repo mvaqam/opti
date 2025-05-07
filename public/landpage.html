@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<title>Aplicación</title>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+
+            <div class="card " style="width: 18rem;">
+              <img src="img/images1.jpg" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title0"></h5>
+                  <p class="card-text0"></p>
+                  <p class="card-meters0"></p>
+                  <a href="#" class="btn btn-primary">Mapa</a>
+                </div>
+              </div>
+        
+              <div class="card" style="width: 18rem;">
+                <img src="img/images2.jpg" class="card-img-top" >
+                <div class="card-body">
+                  <h5 class="card-title1"></h5>
+                  <p class="card-text1"></p>
+                  <p class="card-meters1"></p>
+                  <a href="#" class="btn btn-primary">Mapa</a>
+                </div>
+              </div>
+        
+              <div class="card" style="width: 18rem;">
+                <img src="img/images3.jpg" class="card-img-top" >
+                <div class="card-body">
+                  <h5 class="card-title2"></h5>
+                  <p class="card-text2"></p>
+                  <p class="card-meters2"></p>
+                  <a href="#" class="btn btn-primary">Mapa</a>
+                </div>
+              </div>
+        </div>
+    </div>
+
+    <div>
+
+      <form id="formulario">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email </label>
+          <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword" placeholder="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$" >
+          <small id="pwHelp" class="form-text text-muted">Tiene que tener longitud de entre 8-16 caracteres, una mayuscula, una minuuscula y almenos un digito</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+    </div>
+
+    <h2><a href="login.html">Salir</a></h2>
+
+
+</body>
+<script>
+const url = "https://apiscm.comunidad.madrid/t/ciudadanos.comunidad.madrid/sector-publico/catalogo-unificado/v1/recursos/94756e35-3059-451d-81a6-3427d2551de4/datos?distintos=true&formato=objects&$init=0&$limit=100&quot";
+const finder = () => {
+window.navigator.geolocation.getCurrentPosition(async(gp) => {
+let lat = gp.coords.latitude;
+let lon = gp.coords.longitude;
+const res = await fetch(`https://cors-anywhere.herokuapp.com/https://deamadrid.com/api/finder?lat=${lat}&lon=${lon}`, {
+method:"GET"
+});
+const data = await res.json();
+console.log(data);
+for (let index = 0; index <= 2; index++) {
+    const tituloElemento = document.querySelector(`.card-title${index}`).textContent = data.data[index].municipio_nombre;
+    const textoElemento = document.querySelector(`.card-text${index}`).textContent = data.data[index].tipo_establecimiento;
+    const textoMeters = document.querySelector(`.card-meters${index}`).textContent = "A " + parseFloat(data.data[index].distance).toFixed(2) + " Metros de distancia";
+}
+});
+}
+
+
+document.getElementById("formulario").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const mail = document.getElementById("exampleInputEmail").value;
+      const pw = document.getElementById("exampleInputPassword").value;
+
+      const response = await fetch("/guardar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mail, pw })
+      });
+
+      const result = await response.json();
+      alert(result.message);
+    });
+
+
+finder();
+
+</script>
+</html>
